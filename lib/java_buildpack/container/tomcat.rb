@@ -59,7 +59,7 @@ module JavaBuildpack
 
       # (see JavaBuildpack::Component::ModularComponent#supports?)
       def supports?
-        web_inf? && isZip? && !JavaBuildpack::Util::JavaMainUtils.main_class(@application)
+        web_inf? || isZip? && !JavaBuildpack::Util::JavaMainUtils.main_class(@application)
       end
 
       private
