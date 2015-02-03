@@ -15,6 +15,7 @@
 # limitations under the License.
 
 require 'fileutils'
+require 'zip'
 require 'java_buildpack/component/versioned_dependency_component'
 require 'java_buildpack/container'
 require 'java_buildpack/container/tomcat/tomcat_utils'
@@ -37,9 +38,7 @@ module JavaBuildpack
       # (see JavaBuildpack::Component::BaseComponent#compile)
       def compile
         download(@version, @uri) { |file| expand file }
-        link_to(@application.root.children, root)
-        @droplet.additional_libraries << tomcat_datasource_jar if tomcat_datasource_jar.exist?
-        @droplet.additional_libraries.link_to web_inf_lib
+        link_webapps(@application.root.children, root)
       end
 
       # (see JavaBuildpack::Component::BaseComponent#release)
@@ -107,6 +106,33 @@ module JavaBuildpack
 
       def web_inf_lib
         @droplet.root + 'WEB-INF/lib'
+      end
+
+      def link_webapps(from, to)
+        webapps = []
+        webapps.push(from.find_all {|p| p.fnmatch('*.war')})
+
+        # Explode zips
+        zips = from.find_all {|p| p.fnmatch('*.zip')}
+        zips.each do |zip|
+          Zip::File.open(zip) do |zipfile|
+            zipfile.each do |file|
+              # Skip non-war files in zip
+              next if file.to_s !~ /\.war$/i
+              file.extract
+              webapps.push(Pathname.new(@application.root.to_s) + file.to_s)
+            end
+          end
+        end
+        webapps.flatten!
+
+        if (not webapps.empty?)
+          link_to(webapps, tomcat_webapps)
+        else
+          link_to(from, root)
+          @droplet.additional_libraries << tomcat_datasource_jar if tomcat_datasource_jar.exist?
+          @droplet.additional_libraries.link_to web_inf_lib
+        end
       end
 
     end

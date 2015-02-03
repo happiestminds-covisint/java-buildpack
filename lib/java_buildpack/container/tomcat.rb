@@ -59,18 +59,23 @@ module JavaBuildpack
 
       # (see JavaBuildpack::Component::ModularComponent#supports?)
       def supports?
-        web_inf? || isZip? && !JavaBuildpack::Util::JavaMainUtils.main_class(@application)
+        web_inf? && !JavaBuildpack::Util::JavaMainUtils.main_class(@application)
       end
 
       private
 
       def web_inf?
-        (@application.root + 'WEB-INF').exist?
+        (@application.root + 'WEB-INF').exist? ||
+          wars_or_zips?
       end
-    
-       def isZip?
-              (@application.root + '*.zip').glob.any?
-       end
+
+      def wars_or_zips?
+        entries = @application.root.entries.find_all do |p|
+          p.fnmatch('*.war') || p.fnmatch('*.zip')
+        end
+        not entries.empty?
+      end
+
     end
 
   end

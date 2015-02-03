@@ -1,0 +1,56 @@
+#!/bin/bash
+
+LOGLEVEL=WARN
+[[ -n "$DEBUG" ]] && LOGLEVEL=DEBUG
+
+BUILDPACK_ROOT='/vagrant'
+BUILD_DIR='/app'
+PORT=12345
+
+ARTIFACT=${1:-.}
+
+CACHEDIR='/tmp/cache'
+mkdir -p "$CACHEDIR"
+
+deploy_artifact() {
+	_artifact=$( realpath "$1" )
+	cd "$BUILD_DIR"
+	if [[ -d "$_artifact" ]]; then
+		rsync -aq "${_artifact}/" .
+	elif [[ "$_artifact" == *.jar || "$_artifact" == *.war ]]; then
+		jar xf "$_artifact"
+	elif [[ "$_artifact" == *.zip ]]; then
+		unzip "$_artifact"
+	else
+		cp "$_artifact" .
+	fi
+}
+
+_detect() {
+	JBP_LOG_LEVEL="$LOGLEVEL" ${BUILDPACK_ROOT}/bin/detect "$ARTIFACT"
+}
+
+_compile() {
+	shopt -s dotglob
+	rm -rf ${BUILD_DIR}/*
+	shopt -u dotglob
+	deploy_artifact "$ARTIFACT"
+	JBP_LOG_LEVEL="$LOGLEVEL" ${BUILDPACK_ROOT}/bin/compile "$BUILD_DIR" "$CACHEDIR"
+}
+
+_release() {
+	cd "$BUILD_DIR"
+	COMMAND=$( JBP_LOG_LEVEL="$LOGLEVEL" ${BUILDPACK_ROOT}/bin/release "$BUILD_DIR" \
+		| ruby -e "require \"yaml\"; puts YAML.load(STDIN.read)[\"default_process_types\"][\"web\"]" )
+	if [[ $? -eq 0 ]]; then
+		#eval PORT="$PORT" VCAP_APP_PORT="$PORT" $COMMAND
+		export PORT="$PORT"
+		export VCAP_APP_PORT="$PORT"
+		export VCAP_SERVICES="{}"
+		export VCAP_APPLICATION="{}"
+		eval $COMMAND
+	fi
+}
+
+COMMNAME=$( basename $0 )
+_${COMMNAME}
