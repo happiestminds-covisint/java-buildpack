@@ -76,8 +76,8 @@ module JavaBuildpack
           elsif p.fnmatch?('*.zip')
             # Check if zip contains war files
             #io = IO.popen(['unzip', '-lqq', p.to_s, '*.war'])
-            shell "unzip -lqq #{p.to_s} *.war"
-            return true if $?.exitstatus == 0
+            return shell "unzip -lqq #{p.to_s} *.war"
+            #return true if $?.exitstatus == 0
           end
         end
         return false
