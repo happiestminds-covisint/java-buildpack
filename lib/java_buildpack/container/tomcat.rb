@@ -23,7 +23,6 @@ require 'java_buildpack/container/tomcat/tomcat_logging_support'
 require 'java_buildpack/container/tomcat/tomcat_access_logging_support'
 require 'java_buildpack/container/tomcat/tomcat_redis_store'
 require 'java_buildpack/container/tomcat/tomcat_gemfire_store'
-require 'java_buildpack/util/shell'
 
 module JavaBuildpack
   module Container
@@ -75,8 +74,12 @@ module JavaBuildpack
           if p.fnmatch?('*.war')
             return true
           elsif p.fnmatch?('*.zip')
-            shell "unzip -l #{p.to_s} *.war"
-            return true
+            # Check if zip contains war files
+            #shell "unzip -l #{p.to_s} *.war"
+            #return true
+            io = IO.popen(['unzip', '-lqq', p.to_s, '*.war'])
+            io.read && io.close
+            return true if $?.exitstatus == 0
           end
         end
         return false
