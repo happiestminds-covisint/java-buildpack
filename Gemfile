@@ -7,7 +7,7 @@ group :development do
   gem 'rspec'
   gem 'rubocop'
   gem 'rubocop-rspec'
-  gem 'rubyzip', "~> 1.1", require: 'zip'
+  gem 'rubyzip'
   gem 'simplecov'
   gem 'tee'
   gem 'webmock'

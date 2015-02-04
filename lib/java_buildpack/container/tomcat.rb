@@ -70,10 +70,17 @@ module JavaBuildpack
       end
 
       def wars_or_zips?
-        entries = @application.root.entries.find_all do |p|
-          p.fnmatch('*.war') || p.fnmatch('*.zip')
+        @application.root.entries.find_all do |p|
+          if p.fnmatch?('*.war')
+            return true
+          elsif p.fnmatch?('*.zip')
+            # Check if zip contains war files
+            io = IO.popen(['unzip', '-lqq', p.to_s, '*.war'])
+            io.read && io.close
+            return true if $?.exitstatus == 0
+          end
         end
-        not entries.empty?
+        return false
       end
 
     end

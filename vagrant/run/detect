@@ -24,6 +24,7 @@ deploy_artifact() {
 	else
 		cp "$_artifact" .
 	fi
+	cd -
 }
 
 _detect() {

@@ -13,7 +13,5 @@ source /home/vagrant/.rvm/scripts/rvm
 rvm use --install 1.9.3
 rvm alias create default 1.9.3
 
-gem install rubyzip
-
 sudo mkdir /app
 sudo chown vagrant:vagrant /app
