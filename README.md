@@ -21,6 +21,8 @@ vagrant ssh
 Run the `detect`, `compile` and `release` commands within the vagrant machine.
 
 ```bash
+cd /vagrant/<directory-containing-war-or-zip-files>
+
 /vagrant/vagrant/run/detect
 /vagrant/vagrant/run/compile
 /vagrant/vagrant/run/release

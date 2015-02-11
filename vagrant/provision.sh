@@ -11,6 +11,10 @@ cat >/home/vagrant/.bash_1st_time <<EOT
 
 set -e
 
+cd /vagrant/vagrant/run
+ln -s detect compile
+ln -s detect release
+
 banner Installing rvm
 gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3
 curl -sSL https://get.rvm.io | bash -s stable
