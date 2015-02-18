@@ -16,3 +16,4 @@
 # Repository configuration
 ---
 default_repository_root: https://download.run.pivotal.io
+aws_repository_root: https://s3-us-west-2.amazonaws.com

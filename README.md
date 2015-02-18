@@ -1,11 +1,11 @@
-# Cloud Foundry Java Buildpack + support zip files are having *.war 
+# Cloud Foundry Java Buildpack + support zip files are having *.war + shared lib support
 [![Build Status](https://travis-ci.org/cloudfoundry/java-buildpack.svg?branch=master)](https://travis-ci.org/cloudfoundry/java-buildpack)
 [![Dependency Status](https://gemnasium.com/cloudfoundry/java-buildpack.svg)](https://gemnasium.com/cloudfoundry/java-buildpack)
 [![Code Climate](https://codeclimate.com/repos/5224adaec7f3a3415107004c/badges/bc49f7d7f8dfc47057c8/gpa.svg)](https://codeclimate.com/repos/5224adaec7f3a3415107004c/feed)
 [![Code Climate](https://codeclimate.com/repos/5224adaec7f3a3415107004c/badges/bc49f7d7f8dfc47057c8/coverage.svg)](https://codeclimate.com/repos/5224adaec7f3a3415107004c/feed)
 
 The `java-buildpack` is a [Cloud Foundry][] buildpack for running JVM-based applications.  It is designed to run many JVM-based applications ([Grails][], [Groovy][], Java Main, [Play Framework][], [Spring Boot][], and Servlet) with no additional configuration, but supports configuration of the standard components, and extension to add custom components.
-Also we can push *.zip file which has contain multiple war files.
+Also we can push *.zip file which has contain multiple war files. upload any supported jars into s3 bucket[https://s3-us-west-2.amazonaws.com/covisint.com-shared-libs/sharedlibs.zip] will be extracted into tomcat/libs folders.
 ## Usage
 To use this buildpack specify the URI of the repository when pushing an application to Cloud Foundry:
 
@@ -137,6 +137,10 @@ Connect to the Tomcat instance on port 12345 on your local machine.
 [http://localhost:12345](http://localhost:12345)
 
 
+
+## Shared lib jars Support for Tomcat shard lib. 
+all the application supported jars should be part of https://s3-us-west-2.amazonaws.com/covisint.com-shared-libs/sharedlibs.zip . 
+so during compile phase all the jars will be extracted into tomcat/lib folders. 
 
 ## Contributing
 [Pull requests][] are welcome; see the [contributor guidelines][] for details.
