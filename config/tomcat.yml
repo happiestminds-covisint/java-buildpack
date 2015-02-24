@@ -21,9 +21,6 @@ tomcat:
 lifecycle_support:
   version: 2.+
   repository_root: "{default.repository.root}/tomcat-lifecycle-support"
-shared_lib_jars_support:
-  version: 2.+
-  repository_root: "{aws.repository.root}/covisint.com-shared-libs"
 logging_support:
   version: 2.+
   repository_root: "{default.repository.root}/tomcat-logging-support"

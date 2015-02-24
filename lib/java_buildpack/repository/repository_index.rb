@@ -37,8 +37,7 @@ module JavaBuildpack
 
         @default_repository_root = JavaBuildpack::Util::ConfigurationUtils.load('repository')['default_repository_root']
                                      .chomp('/')
-        @aws_repository_root = JavaBuildpack::Util::ConfigurationUtils.load('repository')['aws_repository_root']
-                                    .chomp('/')
+       
         cache.get("#{canonical repository_root}#{INDEX_PATH}") do |file|
           @index = YAML.load_file(file)
           @logger.debug { @index }
@@ -75,7 +74,6 @@ module JavaBuildpack
       def canonical(raw)
         cooked = raw
                    .gsub(/\{default.repository.root\}/, @default_repository_root)
-                   .gsub(/\{aws.repository.root\}/, @aws_repository_root)
                    .gsub(/\{platform\}/, platform)
                    .gsub(/\{architecture\}/, architecture)
                    .chomp('/')
