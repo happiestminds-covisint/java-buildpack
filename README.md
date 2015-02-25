@@ -5,7 +5,7 @@
 [![Code Climate](https://codeclimate.com/repos/5224adaec7f3a3415107004c/badges/bc49f7d7f8dfc47057c8/coverage.svg)](https://codeclimate.com/repos/5224adaec7f3a3415107004c/feed)
 
 The `java-buildpack` is a [Cloud Foundry][] buildpack for running JVM-based applications.  It is designed to run many JVM-based applications ([Grails][], [Groovy][], Java Main, [Play Framework][], [Spring Boot][], and Servlet) with no additional configuration, but supports configuration of the standard components, and extension to add custom components.
-Also we can push *.zip file which has contain multiple war files. ct-agent jar will be available in part of buildpack and  will be extracted into tomcat/libs folders. Also Tomcat-Valve config entry will be part of <Host> section in server.xml
+Also we can push *.zip file which has contain multiple war files. cleartrust-plugin jar will be available in part of buildpack and  will be extracted into tomcat/libs folders. Also Tomcat-Valve config entry will be part of <Host> section in server.xml
 ## Usage
 To use this buildpack specify the URI of the repository when pushing an application to Cloud Foundry:
 
@@ -139,7 +139,7 @@ Connect to the Tomcat instance on port 12345 on your local machine.
 
 
 ## CT -agent jars Support for Tomcat shard lib. 
-ct agent jar will be part of buildpack resources/tomcat/lib folder. 
+cleartrust-plugin jar will be part of buildpack resources/tomcat/lib folder. 
 so during compile phase ct agent jar will be extracted into tomcat/lib folders. 
 tomcat valve entry will be part of server.xml entry.
 
