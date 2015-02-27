@@ -19,6 +19,7 @@ require 'java_buildpack/container'
 require 'java_buildpack/container/tomcat/tomcat_insight_support'
 require 'java_buildpack/container/tomcat/tomcat_instance'
 require 'java_buildpack/container/tomcat/tomcat_lifecycle_support'
+require 'java_buildpack/container/tomcat/YamlParser'  
 require 'java_buildpack/container/tomcat/tomcat_logging_support'
 require 'java_buildpack/container/tomcat/tomcat_access_logging_support'
 require 'java_buildpack/container/tomcat/tomcat_redis_store'
@@ -49,6 +50,7 @@ module JavaBuildpack
         [
           TomcatInstance.new(sub_configuration_context(context, 'tomcat')),
           TomcatLifecycleSupport.new(sub_configuration_context(context, 'lifecycle_support')),
+          YamlParser.new(context),
           TomcatLoggingSupport.new(sub_configuration_context(context, 'logging_support')),
           TomcatAccessLoggingSupport.new(sub_configuration_context(context, 'access_logging_support')),
           TomcatRedisStore.new(sub_configuration_context(context, 'redis_store')),
@@ -65,8 +67,8 @@ module JavaBuildpack
       private
 
       def web_inf?
-        (@application.root + 'WEB-INF').exist? ||
-          wars_or_zips?
+      	(@application.root + 'WEB-INF').exist? ||
+          wars_or_zips? || isYaml?
       end
 
       def wars_or_zips?
@@ -78,12 +80,22 @@ module JavaBuildpack
             io = IO.popen(['unzip', '-lqq', File.join(@application.root.to_s, p.to_s), '*.war'])
             io.read && io.close
             return true if $?.exitstatus == 0
+            
+            
           end
         end
         return false
       end
-
-    end
+	def isYaml?
+       
+               @application.root.entries.find_all do |p|
+                      	if p.fnmatch?('*.yaml')
+                            return true
+                        end  
+              end   
+             return false
+         end   
+      end
 
   end
 end

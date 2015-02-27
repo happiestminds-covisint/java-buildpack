@@ -19,6 +19,10 @@ require 'java_buildpack/component/versioned_dependency_component'
 require 'java_buildpack/container'
 require 'java_buildpack/container/tomcat/tomcat_utils'
 require 'java_buildpack/util/tokenized_version'
+require 'java_buildpack/container/tomcat/YamlParser'
+require 'open-uri'
+require 'pathname'
+require 'digest/sha1'
 
 module JavaBuildpack
   module Container
@@ -31,13 +35,41 @@ module JavaBuildpack
       #
       # @param [Hash] context a collection of utilities used the component
       def initialize(context)
+       
         super(context) { |candidate_version| candidate_version.check_size(3) }
-      end
+        @yamlobj=YamlParser.new(context)
+       end
 
       # (see JavaBuildpack::Component::BaseComponent#compile)
       def compile
-        download(@version, @uri) { |file| expand file }
-        link_webapps(@application.root.children, root)
+         download(@version, @uri) { |file| expand file }
+          if isYaml?
+               wars = []
+               wapps=@yamlobj.read_config "webapps", "war"
+                     wapps.each do |wapp|
+                        outputpath = @droplet.sandbox + wapp.artifactname
+                        
+                        open(wapp.downloadUrl, http_basic_authentication: [wapp.username, wapp.password]) do 
+                        |file|
+                               File.open(outputpath, "w") do |out|
+                               out.write(file.read)
+                              end
+                              checksum = Digest::SHA1.file(outputpath).hexdigest
+                              if checksum == wapp.sha1
+                                 wars.push Pathname.new(outputpath)
+                               else
+                                 puts "Downloaded check sum #{checksum} got failed for file: #{war.downloadUrl} of repository check sum : #{wapp.sha1}"
+                                 exit 1
+                               end
+                        end
+          end
+        
+        FileUtils.mkdir_p tomcat_webapps
+        link_webapps(wars, tomcat_webapps)
+        else
+         
+          link_webapps(@application.root.children, root)
+        end
       end
 
       # (see JavaBuildpack::Component::BaseComponent#release)
@@ -135,8 +167,16 @@ module JavaBuildpack
           @droplet.additional_libraries.link_to web_inf_lib
         end
       end
-
+      def isYaml?
+                #puts "****************#{@application.root.entries}"
+               @application.root.entries.find_all do |p|
+                   if p.fnmatch?('*.yaml')
+                          return true
+                   end  
+                   
+               end  
+               return false
+         end  
     end
-
   end
 end
