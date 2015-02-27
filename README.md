@@ -1,4 +1,4 @@
-# Cloud Foundry Java Buildpack + support zip files are having *.war + CT-agent jar support
+# Cloud Foundry Java Buildpack + support zip files are having *.war + CT-agent jar support + Shared lib support with YAML upload having maven GAV co-ordinates
 [![Build Status](https://travis-ci.org/cloudfoundry/java-buildpack.svg?branch=master)](https://travis-ci.org/cloudfoundry/java-buildpack)
 [![Dependency Status](https://gemnasium.com/cloudfoundry/java-buildpack.svg)](https://gemnasium.com/cloudfoundry/java-buildpack)
 [![Code Climate](https://codeclimate.com/repos/5224adaec7f3a3415107004c/badges/bc49f7d7f8dfc47057c8/gpa.svg)](https://codeclimate.com/repos/5224adaec7f3a3415107004c/feed)
@@ -6,6 +6,9 @@
 
 The `java-buildpack` is a [Cloud Foundry][] buildpack for running JVM-based applications.  It is designed to run many JVM-based applications ([Grails][], [Groovy][], Java Main, [Play Framework][], [Spring Boot][], and Servlet) with no additional configuration, but supports configuration of the standard components, and extension to add custom components.
 Also we can push *.zip file which has contain multiple war files. cleartrust-plugin jar will be available in part of buildpack and  will be extracted into tomcat/libs folders. Also Tomcat-Valve config entry will be part of <Host> section in server.xml
+
+currently this buildback has been enhanced  for supporting YAML structure which will have libraries , webapps , repository url , credentials for getting maven application artifacts.
+multple context path mapping also take care.
 ## Usage
 To use this buildpack specify the URI of the repository when pushing an application to Cloud Foundry:
 
@@ -143,6 +146,32 @@ cleartrust-plugin jar will be part of buildpack resources/tomcat/lib folder.
 so during compile phase ct agent jar will be extracted into tomcat/lib folders. 
 tomcat valve entry will be part of server.xml entry.
 
+## shared lib - webapps support using YAML file upload. 
+web applications along with supported libraries can be uploaded as YAML format with GAV co-ordinates. below are the sample YAML structure. Also multiple context path
+will be dynamically added to Server.xml as a <Context> entry.
+
+repository:
+  location: <LOCATION>
+  repo-id: <REPOSITORY>
+  authentication:
+    username: <username>
+    password: <password>
+libraries: #specify all libraries as a sequence of GAV Coordinates. These would go in tomcat\lib folder
+  - g:<groupId>
+    a:<artifactId>
+    v:<version>
+      
+webapps: #specify all wars as a sequence of GAV Coordinates this would go into tomcat\webapps folder
+  - g:<groupId>
+    a:<artifactId>
+    v:<version>
+	c:<contextpath>
+  - g:<groupId>
+    a:<artifactId>
+    v:<version>
+	
+all the jars and wars will be downloaded and verify SHA checksum for validation. all the jars will be copied over to tomcat/lib and webapps will have all wars.
+	
 ## Contributing
 [Pull requests][] are welcome; see the [contributor guidelines][] for details.
 

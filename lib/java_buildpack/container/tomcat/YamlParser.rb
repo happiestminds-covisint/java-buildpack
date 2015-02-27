@@ -80,11 +80,13 @@ def detect
 
       begin
         #eliminate context path from component value
-        contextpath =val.split(/\s/)[-1]
-        if contextpath.include? "c:" 
+        mvncontextpath =val.split(/\s/)[-1]
+        if mvncontextpath.include? "c:" 
            #remove the context path key and value from val
             puts "context path found..... removing it from parameters"
-            puts val.slice!(" #{contextpath}")
+            puts val.slice!(" #{mvncontextpath}")
+            mvncontextpath.slice!("c:")
+            @finalcontextpath=mvncontextpath
         end  
         #parse YAML and get the xml response
         contextPath = val.gsub(/\s/,"&").gsub(":","=")+"#{@repopath}&p=#{type}"
@@ -105,7 +107,7 @@ def detect
       REXML::Document.new(mvnXmlResponse).elements[REPOSITORY_PATH].text.rpartition("/").last,
      @username,
      @password,
-     contextpath
+     @finalcontextpath
      )
 
     end

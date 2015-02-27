@@ -45,10 +45,16 @@ module JavaBuildpack
          download(@version, @uri) { |file| expand file }
           if isYaml?
                wars = []
+               contextpaths = Hash.new
                wapps=@yamlobj.read_config "webapps", "war"
                      wapps.each do |wapp|
                         outputpath = @droplet.sandbox + wapp.artifactname
-                        
+                        #if only contextpath available in YAML will be selected for Context tag entry in server.xml
+                        unless wapp.contextpath.nil? 
+                        wapp.artifactname.slice!(".war")
+                        contextpaths[wapp.artifactname]=wapp.contextpath
+                        end
+                        #file download from url with http_header authentication
                         open(wapp.downloadUrl, http_basic_authentication: [wapp.username, wapp.password]) do 
                         |file|
                                File.open(outputpath, "w") do |out|
@@ -66,6 +72,11 @@ module JavaBuildpack
         
         FileUtils.mkdir_p tomcat_webapps
         link_webapps(wars, tomcat_webapps)
+        #dyanamic context tag will be created under Server.xml 
+        unless contextpaths.nil?
+        @droplet.copy_resources
+        context_path_appender contextpaths 
+        end
         else
          
           link_webapps(@application.root.children, root)
@@ -168,14 +179,28 @@ module JavaBuildpack
         end
       end
       def isYaml?
-                #puts "****************#{@application.root.entries}"
-               @application.root.entries.find_all do |p|
+                 @application.root.entries.find_all do |p|
                    if p.fnmatch?('*.yaml')
                           return true
                    end  
                    
                end  
                return false
+         end
+      #using REXML we are adding Context Elements under Host tag in server.xml   
+      def context_path_appender(contextpaths)
+           document = read_xml server_xml
+           host   = REXML::XPath.match(document, '/Server/Service/Engine/Host').first
+           
+            contextpaths.each do | artifactname,contextpath|
+              context = REXML::Element.new('Context')
+              context.add_attribute 'docBase', artifactname
+              context.add_attribute 'reloadable', 'true'
+              context.add_attribute 'path', contextpath
+              host.elements.add(context)
+            end
+                    
+           write_xml server_xml, document
          end  
     end
   end
