@@ -74,7 +74,6 @@ module JavaBuildpack
         link_webapps(wars, tomcat_webapps)
         #dyanamic context tag will be created under Server.xml 
         unless contextpaths.nil?
-        @droplet.copy_resources
         context_path_appender contextpaths 
         end
         else
