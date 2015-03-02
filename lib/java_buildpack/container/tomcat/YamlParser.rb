@@ -6,12 +6,11 @@ require 'java_buildpack/component/base_component'
 require 'digest/sha1'
 
 class MvnDownloadArtifact
-  attr_reader :downloadUrl, :sha1, :version, :artifactname, :username, :password, :contextpath
-  def initialize(downloadUrl, sha1, version, artifactname, username, password, contextpath)
+  attr_reader :downloadUrl, :sha1, :artifactname, :username, :password, :contextpath
+  def initialize(downloadUrl, sha1, artifactname, username, password, contextpath)
     # Instance variables
     @downloadUrl = downloadUrl
     @sha1 = sha1
-    @version = version
     @artifactname = artifactname
     @username = username
     @password = password
@@ -23,6 +22,7 @@ class YamlParser < JavaBuildpack::Component::BaseComponent
   
   SHA1 = 'artifact-resolution/data/sha1'
   REPOSITORY_PATH = 'artifact-resolution/data/repositoryPath'
+  CONTEXT_PATH = 'context-path:'
   def initialize(context)
      super(context)
      @application.root.entries.find_all do |p|               
@@ -52,7 +52,6 @@ def detect
     unless @config.nil? || @config == 0
       libs=read_config "libraries", "jar"
       libs.each do |lib| 
-        #download_jar lib.version.to_s, lib.downloadUrl.to_s, lib.artifactname.to_s, tomcat_lib
         outputpath = @droplet.sandbox + lib.artifactname
         open(lib.downloadUrl, http_basic_authentication: [lib.username, lib.password]) do 
                                 |file|
@@ -80,34 +79,28 @@ def detect
 
       begin
         #eliminate context path from component value
-        mvncontextpath =val.split(/\s/)[-1]
-        if mvncontextpath.include? "c:" 
-           #remove the context path key and value from val
-            puts "context path found..... removing it from parameters"
-            puts val.slice!(" #{mvncontextpath}")
-            mvncontextpath.slice!("c:")
-            @finalcontextpath=mvncontextpath
+         if val.include? CONTEXT_PATH 
+                   mvncontextpath =val.split(/\s/)[-1]
+                   val.slice!(" #{mvncontextpath}")
+                   mvncontextpath.slice!(CONTEXT_PATH)
+                   @finalcontextpath=mvncontextpath
         end  
         #parse YAML and get the xml response
         contextPath = val.gsub(/\s/,"&").gsub(":","=")+"#{@repopath}&p=#{type}"
 
         mvnXmlResponse=open(@resolveurl+contextPath, http_basic_authentication: ["#{@username}", "#{@password}"]).read
-      rescue OpenURI::HTTPError => ex
+       rescue OpenURI::HTTPError => ex
         puts "wrong url endpoint: #{@resolveurl+contextPath}"
         abort
-      end
-
-      #from the mvn artifact xml response consrtuct final downloadable URL
-      downloadUrl = "#{@contenturl}#{contextPath}"
+       end
 
       # create Object which is having downloadUrl, sha1 (for checksum) and version (for cache history)
-      @compMaps << MvnDownloadArtifact.new(downloadUrl,
-       REXML::Document.new(mvnXmlResponse).elements[SHA1].text,
-      val.gsub(/\s/,"&").gsub(":","=").rpartition("=").last, 
+      @compMaps << MvnDownloadArtifact.new(@contenturl+contextPath,
+      REXML::Document.new(mvnXmlResponse).elements[SHA1].text,
       REXML::Document.new(mvnXmlResponse).elements[REPOSITORY_PATH].text.rpartition("/").last,
-     @username,
-     @password,
-     @finalcontextpath
+      @username,
+      @password,
+      @finalcontextpath
      )
 
     end
