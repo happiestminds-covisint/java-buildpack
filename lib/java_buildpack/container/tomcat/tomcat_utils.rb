@@ -20,7 +20,9 @@ require 'rexml/formatters/pretty'
 
 module JavaBuildpack
   module Container
-
+    
+    TOMCAT_DEPLOY_DIR = 'webapps'
+    
     # The Tomcat +context.xml+ file
     #
     # @return [Pathname] the Tomcat +context.xml+ file
@@ -64,16 +66,9 @@ module JavaBuildpack
     #
     # @return [Pathname] the Tomcat +webapps+ directory
     def tomcat_webapps
-      @droplet.sandbox + 'webapps'
+      @droplet.sandbox + TOMCAT_DEPLOY_DIR
     end
-    
-    # The Tomcat +deploy+ directory
-    #
-    # @return [Pathname] the Tomcat +deploy+ directory
-    def tomcat_deploy
-      @droplet.sandbox + 'deploy'
-    end
-
+  
     # Write a properly formatted XML file
     #
     # @param [Pathname] file the file to write

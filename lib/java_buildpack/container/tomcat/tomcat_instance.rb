@@ -69,10 +69,8 @@ module JavaBuildpack
                                end
                         end
           end
-        # incase we want to change the destination Ex use tomcat_deploy rather tomcat_webapps
-        destination = tomcat_webapps 
-        FileUtils.mkdir_p destination
-        link_webapps(wars, destination)
+        FileUtils.mkdir_p tomcat_webapps
+        link_webapps(wars, tomcat_webapps)
         #dyanamic context tag will be created under Server.xml 
         unless contextpaths.nil?
         context_path_appender contextpaths 
