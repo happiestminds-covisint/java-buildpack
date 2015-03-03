@@ -48,7 +48,7 @@ module JavaBuildpack
                contextpaths = Hash.new
                wapps=@yamlobj.read_config "webapps", "war"
                      wapps.each do |wapp|
-                        outputpath = @droplet.sandbox + wapp.artifactname
+                        outputpath = @droplet.root + wapp.artifactname
                         #if only contextpath available in YAML will be selected for Context tag entry in server.xml
                         unless wapp.contextpath.nil? 
                         wapp.artifactname.slice!(".war")
