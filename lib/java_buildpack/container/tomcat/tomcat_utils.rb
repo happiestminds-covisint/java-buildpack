@@ -66,6 +66,13 @@ module JavaBuildpack
     def tomcat_webapps
       @droplet.sandbox + 'webapps'
     end
+    
+    # The Tomcat +deploy+ directory
+    #
+    # @return [Pathname] the Tomcat +deploy+ directory
+    def tomcat_deploy
+      @droplet.sandbox + 'deploy'
+    end
 
     # Write a properly formatted XML file
     #

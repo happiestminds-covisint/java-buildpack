@@ -69,9 +69,10 @@ module JavaBuildpack
                                end
                         end
           end
-        
-        FileUtils.mkdir_p tomcat_webapps
-        link_webapps(wars, tomcat_webapps)
+        # incase we want to change the destination Ex use tomcat_deploy rather tomcat_webapps
+        destination = tomcat_webapps 
+        FileUtils.mkdir_p destination
+        link_webapps(wars, destination)
         #dyanamic context tag will be created under Server.xml 
         unless contextpaths.nil?
         context_path_appender contextpaths 
@@ -170,7 +171,7 @@ module JavaBuildpack
         webapps.flatten!
 
         if (not webapps.empty?)
-          link_to(webapps, tomcat_webapps)
+          link_to(webapps, to)
         else
           link_to(from, root)
           @droplet.additional_libraries << tomcat_datasource_jar if tomcat_datasource_jar.exist?
