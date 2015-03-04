@@ -9,6 +9,68 @@ Also we can push *.zip file which has contain multiple war files. cleartrust-plu
 
 currently this buildback has been enhanced  for supporting YAML structure which will have libraries , webapps , repository url , credentials for getting maven application artifacts.
 multple context path mapping also take care.
+
+
+
+## CT -agent jars Support for Tomcat shard lib. 
+cleartrust-plugin jar will be part of buildpack resources/tomcat/lib folder. 
+so during compile phase ct agent jar will be extracted into tomcat/lib folders. 
+tomcat valve entry will be part of server.xml entry.
+
+## shared lib - webapps support using YAML file upload. 
+web applications along with supported libraries can be uploaded as YAML format with GAV co-ordinates. below are the sample YAML structure. Also multiple context path
+will be dynamically added to Server.xml as a <Context> entry.
+
+```repository:
+  location: <LOCATION>
+  repo-id: <REPOSITORY>
+  authentication:
+    username: <username>
+    password: <password>
+libraries: #specify all libraries as a sequence of GAV Coordinates. These would go in tomcat\lib folder
+- g: <groupId>
+  a: <artifactId>
+  v: <version>
+      
+webapps: #specify all wars as a sequence of GAV Coordinates this would go into tomcat\webapps folder
+- g: <groupId>
+  a: <artifactId>
+  v: <version>
+  context-path: <contextpath>
+- g: <groupId>
+     a:<artifactId>
+     v:<version>
+```	
+all the jars and wars will be downloaded and verify SHA checksum for validation. all the jars will be copied over to tomcat/lib and webapps will have all wars.
+
+###Even shared libs can be (optional). if we want to use libraries as optional then remove the below section from YAML
+```
+libraries: #specify all libraries as a sequence of GAV Coordinates. These would go in tomcat\lib folder
+- g: <groupId>
+  a: <artifactId>
+  v: <version>
+```
+
+## cf push for YAML steps
+```
+##Following are the steps to push this yaml and test out the buildpack..
+1.	Copy the attached YAML to an empty directory
+2.	With PWD being the directory in 1 do a "cf p <app-name> -b https://github.com/happiestminds-covisint/java-buildpack.git”
+3.	Your instance should come up with out issue.
+4.	Now go to http://<domain>/check. And you should get a success response.
+5.	Now go to http://<domain>/classes?className=sample.SampleTCValve. And it will tell the sample.SampleTCValve class was found. This class is part of the library that is being pushed using the manifest and it goes into the shared classpath.
+```
+##Notes:
+1.	Passing the manifest using "–p” does not work. Looks like the CF CLI does not support upload of a single file which is not an Archive. I think this might work using the CF rest APIs. Let me know if it does not.. Will find some work around for you.
+2.	Use *.yaml for now. *.yml does not work. Looks like CF CLI strips *.yml files before upload. Should work with the rest API. But stick to *.yaml as that seems to the official extension
+
+##convert YAML file into zip formation and use like below 
+```
+ cf p <app-name> -b https://github.com/happiestminds-covisint/java-buildpack.git -p repo-manifest.zip 
+```
+
+
+
 ## Usage
 To use this buildpack specify the URI of the repository when pushing an application to Cloud Foundry:
 
@@ -139,38 +201,6 @@ Connect to the Tomcat instance on port 12345 on your local machine.
 
 [http://localhost:12345](http://localhost:12345)
 
-
-
-## CT -agent jars Support for Tomcat shard lib. 
-cleartrust-plugin jar will be part of buildpack resources/tomcat/lib folder. 
-so during compile phase ct agent jar will be extracted into tomcat/lib folders. 
-tomcat valve entry will be part of server.xml entry.
-
-## shared lib - webapps support using YAML file upload. 
-web applications along with supported libraries can be uploaded as YAML format with GAV co-ordinates. below are the sample YAML structure. Also multiple context path
-will be dynamically added to Server.xml as a <Context> entry.
-
-repository:
-  location: <LOCATION>
-  repo-id: <REPOSITORY>
-  authentication:
-    username: <username>
-    password: <password>
-libraries: #specify all libraries as a sequence of GAV Coordinates. These would go in tomcat\lib folder
-  - g:<groupId>
-    a:<artifactId>
-    v:<version>
-      
-webapps: #specify all wars as a sequence of GAV Coordinates this would go into tomcat\webapps folder
-  - g:<groupId>
-    a:<artifactId>
-    v:<version>
-	c:<contextpath>
-  - g:<groupId>
-    a:<artifactId>
-    v:<version>
-	
-all the jars and wars will be downloaded and verify SHA checksum for validation. all the jars will be copied over to tomcat/lib and webapps will have all wars.
 	
 ## Contributing
 [Pull requests][] are welcome; see the [contributor guidelines][] for details.

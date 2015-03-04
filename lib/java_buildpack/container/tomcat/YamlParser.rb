@@ -40,9 +40,11 @@ class YamlParser < JavaBuildpack::Component::BaseComponent
                               @repopath = "&r=#{@repoid}"
                               @webapps = @config['webapps']
                               @libraries=@config['libraries']  
-                              @libraries.each do|lib|
-                                ['g', 'a', 'v'].each {|key| abort "Invalid YAML format in libraries" unless !lib.is_a?(String) && lib.has_key?(key)} 
-                              end  
+                              unless @libraries.nil?
+                                @libraries.each do|lib|
+                                    ['g', 'a', 'v'].each {|key| abort "Invalid YAML format in libraries" unless !lib.is_a?(String) && lib.has_key?(key)} 
+                                end 
+                              end
                               @webapps.each do |app|
                                 ['g', 'a', 'v'].each {|key| abort "Invalid YAML format in webapps" unless !app.is_a?(String) && app.has_key?(key)}
                               end
@@ -59,31 +61,34 @@ def detect
   def compile
     unless @config.nil? || @config == 0
       libs=read_config "libraries", "jar"
-      libs.each do |lib| 
-        outputpath = @droplet.root + lib.artifactname
-        open(lib.downloadUrl, http_basic_authentication: [lib.username, lib.password]) do 
-                                |file|
-                  File.open(outputpath, "w") do |out|
-                    out.write(file.read)
-                  end 
-                  checksum = Digest::SHA1.file(outputpath).hexdigest  
-                  if checksum == lib.sha1
-                        FileUtils.mkdir_p tomcat_lib
-                        FileUtils.cp_r(outputpath, tomcat_lib)
-                        else 
-                        puts "check sum got failed for file: #{lib.downloadUrl}"
-                        exit 1
-                  end
-      end 
-    end  
+      unless libs.nil?
+        libs.each do |lib| 
+          outputpath = @droplet.root + lib.artifactname
+            open(lib.downloadUrl, http_basic_authentication: [lib.username, lib.password]) do 
+                                  |file|
+                    File.open(outputpath, "w") do |out|
+                      out.write(file.read)
+                    end 
+                    checksum = Digest::SHA1.file(outputpath).hexdigest  
+                    if checksum == lib.sha1
+                          FileUtils.mkdir_p tomcat_lib
+                          FileUtils.cp_r(outputpath, tomcat_lib)
+                          else 
+                          puts "check sum got failed for file: #{lib.downloadUrl}"
+                          exit 1
+                    end
+            end 
+       end 
+     end
+    end
   end
-  end
+  
   def release
        end
   
   def read_config(component, type)
     @compMaps||= Array.new
-    
+    unless @config[component].nil?
     @config[component].each do |val|
 
     params = []
@@ -98,7 +103,7 @@ def detect
            rescue OpenURI::HTTPError => ex
             puts "wrong url endpoint: #{@resolveurl+contextPath}"
             abort
-     end
+           end
 
       # create Object which is having downloadUrl, sha1 (for checksum) and version (for cache history)
       @compMaps << MvnDownloadArtifact.new(@contenturl+contextPath,
@@ -109,6 +114,7 @@ def detect
       val['context-path']
      )
 
+    end
     end
 
     return @compMaps
