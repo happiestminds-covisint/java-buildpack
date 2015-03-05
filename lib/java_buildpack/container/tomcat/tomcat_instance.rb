@@ -50,9 +50,11 @@ module JavaBuildpack
                      wapps.each do |wapp|
                         outputpath = @droplet.root + wapp.artifactname
                         #if only contextpath available in YAML will be selected for Context tag entry in server.xml
-                        unless wapp.contextpath.nil? 
                         wapp.artifactname.slice!(".war")
+                        unless wapp.contextpath.nil? 
                         contextpaths[wapp.artifactname]=wapp.contextpath
+                        else
+                        contextpaths[wapp.artifactname]=wapp.artifactname
                         end
                         #file download from url with http_header authentication
                         open(wapp.downloadUrl, http_basic_authentication: [wapp.username, wapp.password]) do 
