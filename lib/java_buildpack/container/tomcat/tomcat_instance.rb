@@ -79,7 +79,7 @@ module JavaBuildpack
         end
         else
          
-          link_webapps(@application.root.children, root)
+          link_webapps(@application.root.children, tomcat_webapps)
         end
       end
 
