@@ -191,7 +191,9 @@ module JavaBuildpack
       def context_path_appender(contextpaths)
            document = read_xml server_xml
            host   = REXML::XPath.match(document, '/Server/Service/Engine/Host').first
-           
+            #autoDeploy="false" deployOnStartup="false"
+           host.add_attribute 'autoDeploy' 'false'
+           host.add_attribute 'deployOnStartup' 'false'
             contextpaths.each do | artifactname,contextpath|
               context = REXML::Element.new('Context')
               context.add_attribute 'docBase', artifactname
