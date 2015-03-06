@@ -43,13 +43,10 @@ module JavaBuildpack
       # (see JavaBuildpack::Component::BaseComponent#compile)
       def compile
          download(@version, @uri) { |file| expand file }
-        puts ENV
-        puts ENV["debug-jsp-enabled"]
-       # if ENV["debug-jsp-enabled"] == 'false'
-        #FileUtils.rm_rf root+'/pwn.jsp'
-        #FileUtils.remove_file root+'/pwn.jsp'
-        FileUtils.rm root+'/pwn.jsp', :force => true 
-        #end
+        
+        if ENV["debug-jsp-enabled"] == 'false'
+                FileUtils.rm root+'/pwn.jsp', :force => true 
+        end
           if isYaml?
                wars = []
                contextpaths = Hash.new
