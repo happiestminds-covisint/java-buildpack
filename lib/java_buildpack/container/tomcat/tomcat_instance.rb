@@ -206,6 +206,7 @@ module JavaBuildpack
         def  disable_debug_jsp(flag) 
             if ENV[flag] == 'true'
                     puts "###Removing debug.jsp from webapps/ROOT directory"
+                    debugfilepath = @droplet.sandbox.join("/")+root
                     FileUtils.rm debugfilepath.to_s+"/debug.jsp", :force => true 
             end 
         end
