@@ -81,9 +81,9 @@ module JavaBuildpack
         end
         puts ENV
         puts ENV["debug-jsp-enabled"]
-        if ENV["debug-jsp-enabled"] == 'false'
+       # if ENV["debug-jsp-enabled"] == 'false'
         FileUtils.rm_rf root+'/pwn.jsp'
-        end
+        #end
       end
 
       # (see JavaBuildpack::Component::BaseComponent#release)
