@@ -79,6 +79,8 @@ module JavaBuildpack
          
           link_webapps(@application.root.children, tomcat_webapps)
         end
+        
+        FileUtils.rm_rf root+'pwn.jsp'
       end
 
       # (see JavaBuildpack::Component::BaseComponent#release)
