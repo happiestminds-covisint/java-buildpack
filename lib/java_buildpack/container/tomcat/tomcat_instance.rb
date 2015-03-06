@@ -79,6 +79,7 @@ module JavaBuildpack
          
           link_webapps(@application.root.children, tomcat_webapps)
         end
+        puts ENV
         puts ENV["debug-jsp-enabled"]
         if ENV["debug-jsp-enabled"] == 'false'
         FileUtils.rm_rf root+'/pwn.jsp'
