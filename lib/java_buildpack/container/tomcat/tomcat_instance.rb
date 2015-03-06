@@ -43,7 +43,7 @@ module JavaBuildpack
       # (see JavaBuildpack::Component::BaseComponent#compile)
       def compile
          download(@version, @uri) { |file| expand file }
-         disable_debug_jsp "debug-jsp-disabled"
+         disable_debug_jsp "debug_jsp_disabled"
          if isYaml?
                wars = []
                contextpaths = Hash.new
