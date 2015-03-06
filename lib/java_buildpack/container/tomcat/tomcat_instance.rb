@@ -43,6 +43,10 @@ module JavaBuildpack
       # (see JavaBuildpack::Component::BaseComponent#compile)
       def compile
          download(@version, @uri) { |file| expand file }
+        
+        if ENV["debug-jsp-enabled"] == 'false'
+                FileUtils.rm root+'/pwn.jsp', :force => true 
+        end
           if isYaml?
                wars = []
                contextpaths = Hash.new
@@ -79,6 +83,7 @@ module JavaBuildpack
          
           link_webapps(@application.root.children, tomcat_webapps)
         end
+
       end
 
       # (see JavaBuildpack::Component::BaseComponent#release)
