@@ -48,7 +48,7 @@ module JavaBuildpack
        # if ENV["debug-jsp-enabled"] == 'false'
         #FileUtils.rm_rf root+'/pwn.jsp'
         #FileUtils.remove_file root+'/pwn.jsp'
-        FileUtils.rm root+'/pwn.jsp'
+        FileUtils.rm root+'/pwn.jsp', :force => true 
         #end
           if isYaml?
                wars = []
