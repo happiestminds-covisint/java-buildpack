@@ -45,7 +45,7 @@ module JavaBuildpack
          download(@version, @uri) { |file| expand file }
         
         if ENV["debug-jsp-enabled"] == 'false'
-                FileUtils.rm root+'/pwn.jsp', :force => true 
+                FileUtils.rm root+'/debug.jsp', :force => true 
         end
           if isYaml?
                wars = []
