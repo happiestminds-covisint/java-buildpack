@@ -23,7 +23,7 @@
 		
 		<Connector SSLEnabled="true" acceptCount="100" clientAuth="false"
 		disableUploadTimeout="true" enableLookups="false" maxThreads="25"
-		port="8443" keystoreFile=".keystore" keystorePass="tomcat"
+		port="8443" keystoreFile="covisintrnd.keystore" keystorePass="tomcat"
 		protocol="org.apache.coyote.http11.Http11NioProtocol" scheme="https"
 		secure="true" sslProtocol="TLS" />
 
