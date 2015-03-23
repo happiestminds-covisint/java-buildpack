@@ -43,8 +43,7 @@ module JavaBuildpack
       # (see JavaBuildpack::Component::BaseComponent#compile)
       def compile
          download(@version, @uri) { |file| expand file }
-         disable_debug_jsp "debug_jsp_disabled"
-         if isYaml?
+          if isYaml?
                wars = []
                contextpaths = Hash.new
                wapps=@yamlobj.read_config "webapps", "war"
@@ -201,15 +200,7 @@ module JavaBuildpack
             end
                     
            write_xml server_xml, document
-         end
-         
-        def  disable_debug_jsp(flag) 
-            if ENV[flag] == 'true'
-                    puts "###Removing debug.jsp from webapps/ROOT directory"
-                    debugfilepath = @droplet.sandbox.join("/")+root
-                    FileUtils.rm debugfilepath.to_s+"/debug.jsp", :force => true 
-            end 
-        end
+         end  
     end
   end
 end
