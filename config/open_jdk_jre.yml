@@ -16,7 +16,8 @@
 # Configuration for JRE repositories keyed by vendor
 # To go back to Java 7, permgen should be used instead of metaspace.  Please see the documentation for more detail.
 ---
-repository_root: "{default.repository.root}/openjdk/{platform}/{architecture}"
+#repository_root: "{default.repository.root}/openjdk/{platform}/{architecture}"
+repository_root: ""
 version: 1.8.0_+
 memory_sizes:
   metaspace: 64m..
