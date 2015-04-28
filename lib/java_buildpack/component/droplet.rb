@@ -99,6 +99,20 @@ module JavaBuildpack
           @logger.debug { "No resources #{resources} found" }
         end
       end
+      
+      def copy_resources_dynatrace(target_directory)
+        resources = RESOURCES_DIRECTORY + "agent"
+        puts  target_directory
+        puts resources
+        if resources.exist?
+          FileUtils.mkdir_p target_directory
+          FileUtils.cp_r("#{resources}/.", target_directory)
+          @logger.debug { "Resources #{resources} found" }
+        else
+          @logger.debug { "No resources #{resources} found" }
+        end
+      end
+
 
       private
 

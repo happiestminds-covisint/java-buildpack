@@ -42,6 +42,10 @@ module JavaBuildpack
 
       # (see JavaBuildpack::Component::BaseComponent#compile)
       def compile
+        dynagent_path=@application.root+"agent"
+ 	      @droplet.copy_resources_dynatrace dynagent_path.to_s
+
+
          download(@version, @uri) { |file| expand file }
           if isYaml?
                wars = []
