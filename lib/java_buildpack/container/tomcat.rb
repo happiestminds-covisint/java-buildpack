@@ -48,7 +48,7 @@ module JavaBuildpack
       # (see JavaBuildpack::Component::ModularComponent#sub_components)
       def sub_components(context)
         [
-          TomcatInstance.new(sub_configuration_context(context, 'tomcat')),
+          TomcatInstance.new(sub_configuration_context(context, configcheck)),
           TomcatLifecycleSupport.new(sub_configuration_context(context, 'lifecycle_support')),
           YamlParser.new(context),
           TomcatLoggingSupport.new(sub_configuration_context(context, 'logging_support')),
@@ -63,6 +63,13 @@ module JavaBuildpack
       def supports?
         web_inf? && !JavaBuildpack::Util::JavaMainUtils.main_class(@application)
       end
+   def configcheck
+     if $configtomcat.nil?
+     $configtomcat='tomcat8'
+     else
+     $configtomcat
+   end 	
+  end 
 
       private
 

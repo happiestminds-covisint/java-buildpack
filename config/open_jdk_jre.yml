@@ -15,15 +15,44 @@
 
 # Configuration for JRE repositories keyed by vendor
 # To go back to Java 7, permgen should be used instead of metaspace.  Please see the documentation for more detail.
----
-repository_root: "{default.repository.root}/openjdk/{platform}/{architecture}"
-version: 1.8.0_+
-memory_sizes:
-  metaspace: 64m..
-  # permgen: 64m..
-memory_heuristics:
-  heap: 75
-  metaspace: 10
-  # permgen: 10
-  stack: 5
-  native: 10
+--- 
+openjdk7: 
+  memory_heuristics: 
+    heap: 75
+    native: 10
+    permgen: 10
+    stack: 5
+  memory_sizes: 
+    permgen: 64m..
+  repository_root: "{default.repository.root}/openjdk/{platform}/{architecture}"
+  version: 1.7.0_+
+openjdk8: 
+  memory_heuristics: 
+    heap: 75
+    metaspace: 10
+    native: 10
+    stack: 5
+  memory_sizes: 
+    metaspace: 64m..
+  repository_root: "https://s3.amazonaws.com/covisintrnd.com-software"
+  version: 1.8.1
+oraclejdk7: 
+  memory_heuristics: 
+    heap: 75
+    native: 10
+    permgen: 10
+    stack: 5
+  memory_sizes: 
+    permgen: 64m..
+  repository_root: "https://s3.amazonaws.com/covisintrnd.com-software"
+  version: 1.7.0_+
+oraclejdk8: 
+  memory_heuristics: 
+    heap: 75
+    metaspace: 10
+    native: 10
+    stack: 5
+  memory_sizes: 
+    metaspace: 64m..
+  repository_root: "https://s3.amazonaws.com/covisintrnd.com-software"
+  version: 1.8.0_+

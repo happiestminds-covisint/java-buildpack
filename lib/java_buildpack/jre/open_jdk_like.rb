@@ -18,6 +18,7 @@ require 'fileutils'
 require 'java_buildpack/component/versioned_dependency_component'
 require 'java_buildpack/jre'
 require 'java_buildpack/jre/memory/openjdk_memory_heuristic_factory'
+require 'java_buildpack/container/tomcat/YamlParser'
 
 module JavaBuildpack
   module Jre
@@ -33,14 +34,17 @@ module JavaBuildpack
         @component_name = self.class.to_s.space_case
         @configuration  = context[:configuration]
         @droplet        = context[:droplet]
-
+        YamlParser.new(context)
         @droplet.java_home.root = @droplet.sandbox
       end
 
       # (see JavaBuildpack::Component::BaseComponent#detect)
       def detect
+        
+       
+       
         @version, @uri             = JavaBuildpack::Repository::ConfiguredItem.find_item(@component_name,
-                                                                                         @configuration)
+                                                                                         find_jdk_version_config)
         @droplet.java_home.version = @version
         super
       end
@@ -58,7 +62,13 @@ module JavaBuildpack
           .add_option('-XX:OnOutOfMemoryError', killjava)
           .concat memory
       end
-
+      
+      def find_jdk_version_config
+         if !@configuration.key?$configjdk
+         $configjdk='openjdk8'
+         end      
+         @configuration=@configuration[$configjdk]
+      end 
       private
 
       KEY_MEMORY_HEURISTICS = 'memory_heuristics'.freeze
