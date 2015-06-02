@@ -47,7 +47,13 @@ module JavaBuildpack
                contextpaths = Hash.new
                wapps=@yamlobj.read_config "webapps", "war"
                      wapps.each do |wapp|
-                        outputpath = @droplet.root + wapp.artifactname
+                        unless wapp.contextpath.nil?
+                            wapp.contextpath.strip!
+                            warFilename = (wapp.contextpath == "/") ? "/ROOT" : wapp.contextpath
+                            warFilename.slice! "/"
+                        end
+                        warFilename =  warFilename.nil? ?  wapp.artifactname : "#{warFilename}.war"
+                        outputpath = @droplet.root + warFilename
                         #if only contextpath available in YAML will be selected for Context tag entry in server.xml
                         unless wapp.contextpath.nil? 
                         wapp.artifactname.slice!(".war")
@@ -71,9 +77,10 @@ module JavaBuildpack
         FileUtils.mkdir_p tomcat_webapps
         link_webapps(wars, tomcat_webapps)
         #dyanamic context tag will be created under Server.xml 
-        unless contextpaths.nil?
-        context_path_appender contextpaths 
-        end
+        # Commenting this out temporarily. Till a better solution is found
+        #unless contextpaths.nil?
+        #context_path_appender contextpaths
+        #end
         else
          
           link_webapps(@application.root.children, tomcat_webapps)
