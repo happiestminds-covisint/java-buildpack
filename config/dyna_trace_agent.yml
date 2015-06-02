@@ -16,4 +16,4 @@
 # Configuration for the Dynatrace framework
 ---
 version: 6.1.0_+
-repository_root: ""
+repository_root: "https://s3-us-west-2.amazonaws.com/covisintrnd.com-dynatrace/"
