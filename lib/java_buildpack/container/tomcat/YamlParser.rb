@@ -41,13 +41,13 @@ class YamlParser < JavaBuildpack::Component::BaseComponent
                               @webapps = @config['webapps']
                               @libraries=@config['libraries']  
                           
-                              unless @config["container"]["configtomcat"].nil?
+                              unless @config["container"].nil?
                               $configtomcat=@config["container"]["configtomcat"]
                               else
                               $configtomcat="tomcat8"  
                               end
                               puts $configtomcat
-                              unless @config["container"]["configjdk"].nil?
+                              unless @config["container"].nil?
                               $configjdk=@config["container"]["configjdk"]
                               else
                               $configjdk="openjdk8"  
