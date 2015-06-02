@@ -11,13 +11,6 @@ currently this buildback has been enhanced  for supporting YAML structure which 
 multiple context path mapping also take care.
 Added custom tomcat and jdk support with YAML structure.
 
-
-
-## CT -agent jars Support for Tomcat shard lib. 
-cleartrust-plugin jar will be part of buildpack resources/tomcat/lib folder. 
-so during compile phase ct agent jar will be extracted into tomcat/lib folders. 
-tomcat valve entry will be part of server.xml entry.
-
 ## shared lib - webapps and custom tomcat,jdk support using YAML file upload
 web applications along with supported libraries can be uploaded as YAML format with GAV co-ordinates. below are the sample YAML structure. Also multiple context path
 will be dynamically added to Server.xml as a <Context> entry.
