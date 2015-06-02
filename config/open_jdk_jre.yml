@@ -16,55 +16,27 @@
 # Configuration for JRE repositories keyed by vendor
 # To go back to Java 7, permgen should be used instead of metaspace.  Please see the documentation for more detail.
 --- 
-openjdk7: 
-  memory_heuristics: 
-    heap: 75
-    native: 10
-    permgen: 10
-    stack: 5
-  memory_sizes: 
-    permgen: 64m..
-  repository_root: "{default.repository.root}/openjdk/{platform}/{architecture}"
-  version: 1.7.0_+
-  memory_calculator:
-    version: 1.+
-    repository_root: "{default.repository.root}/memory-calculator/{platform}/{architecture}"
-openjdk8: 
+memory_calculator: 
   memory_heuristics: 
     heap: 75
     metaspace: 10
+    permgen: 10
     native: 10
     stack: 5
   memory_sizes: 
     metaspace: 64m..
-  repository_root: "https://s3.amazonaws.com/covisintrnd.com-software"
-  version: 1.8.1
-  memory_calculator:
-    version: 1.+
-    repository_root: "{default.repository.root}/memory-calculator/{platform}/{architecture}"
-oraclejdk7: 
-  memory_heuristics: 
-    heap: 75
-    native: 10
-    permgen: 10
-    stack: 5
-  memory_sizes: 
     permgen: 64m..
-  repository_root: "https://s3.amazonaws.com/covisintrnd.com-software"
-  version: 1.7.0_+
-  memory_calculator:
-    version: 1.+
-    repository_root: "{default.repository.root}/memory-calculator/{platform}/{architecture}"
+  repository_root: "{default.repository.root}/memory-calculator/{platform}/{architecture}"
+  version: 1.+
 oraclejdk8: 
-  memory_heuristics: 
-    heap: 75
-    metaspace: 10
-    native: 10
-    stack: 5
-  memory_sizes: 
-    metaspace: 64m..
   repository_root: "https://s3.amazonaws.com/covisintrnd.com-software"
   version: 1.8.0_+
-  memory_calculator:
-    version: 1.+
-    repository_root: "{default.repository.root}/memory-calculator/{platform}/{architecture}"
+openjdk7:
+  repository_root: "{default.repository.root}/openjdk/{platform}/{architecture}"
+  version: 1.7.0_+
+openjdk8:   
+  repository_root: "https://s3.amazonaws.com/covisintrnd.com-software"
+  version: 1.8.1
+oraclejdk7:
+  repository_root: "https://s3.amazonaws.com/covisintrnd.com-software"
+  version: 1.7.0_+
