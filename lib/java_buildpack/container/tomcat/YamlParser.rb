@@ -46,13 +46,13 @@ class YamlParser < JavaBuildpack::Component::BaseComponent
                               else
                               $configtomcat="tomcat8"  
                               end
-                              
+                              puts $configtomcat
                               unless @config["container"]["configjdk"].nil?
                               $configjdk=@config["container"]["configjdk"]
                               else
                               $configjdk="openjdk8"  
                               end
-                          
+                              puts $configjdk 
                               unless @libraries.nil?
                                 @libraries.each do|lib|
                                     ['g', 'a', 'v'].each {|key| abort "Invalid YAML format in libraries" unless !lib.is_a?(String) && lib.has_key?(key)} 
