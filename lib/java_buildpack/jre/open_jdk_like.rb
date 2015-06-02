@@ -35,11 +35,7 @@ module JavaBuildpack
 
       # (see JavaBuildpack::Component::ModularComponent#sub_components)
       def sub_components(context)
-      	puts "before yaml"
-	  YamlParser.new(context)
-	  puts "before"
-	  puts  $configjdk
-	  puts "after"
+     	  YamlParser.new(context)
         [
           OpenJDKLikeJre.new(sub_configuration_context(context, $configjdk)
                                .merge(component_name: self.class.to_s.space_case)),
