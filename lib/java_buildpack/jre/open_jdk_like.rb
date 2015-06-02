@@ -36,6 +36,7 @@ module JavaBuildpack
       # (see JavaBuildpack::Component::ModularComponent#sub_components)
       def sub_components(context)
 	  YamlParser.new(context)
+	  puts "configjdk: #{$configjdk}"
         [
           OpenJDKLikeJre.new(sub_configuration_context(context, $configjdk)
                                .merge(component_name: self.class.to_s.space_case)),
