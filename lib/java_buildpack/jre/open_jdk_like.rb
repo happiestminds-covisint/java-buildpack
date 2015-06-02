@@ -35,6 +35,7 @@ module JavaBuildpack
 
       # (see JavaBuildpack::Component::ModularComponent#sub_components)
       def sub_components(context)
+      	puts "before yaml"
 	  YamlParser.new(context)
 	  puts "before"
 	  puts  $configjdk
