@@ -1,5 +1,5 @@
 # Cloud Foundry Java Buildpack
-# Copyright (c) 2013 the original author or authors.
+# Copyright 2013-2015 the original author or authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -26,6 +26,9 @@ openjdk7:
     permgen: 64m..
   repository_root: "{default.repository.root}/openjdk/{platform}/{architecture}"
   version: 1.7.0_+
+  memory_calculator:
+    version: 1.+
+    repository_root: "{default.repository.root}/memory-calculator/{platform}/{architecture}"
 openjdk8: 
   memory_heuristics: 
     heap: 75
@@ -36,6 +39,9 @@ openjdk8:
     metaspace: 64m..
   repository_root: "https://s3.amazonaws.com/covisintrnd.com-software"
   version: 1.8.1
+  memory_calculator:
+    version: 1.+
+    repository_root: "{default.repository.root}/memory-calculator/{platform}/{architecture}"
 oraclejdk7: 
   memory_heuristics: 
     heap: 75
@@ -46,6 +52,9 @@ oraclejdk7:
     permgen: 64m..
   repository_root: "https://s3.amazonaws.com/covisintrnd.com-software"
   version: 1.7.0_+
+  memory_calculator:
+    version: 1.+
+    repository_root: "{default.repository.root}/memory-calculator/{platform}/{architecture}"
 oraclejdk8: 
   memory_heuristics: 
     heap: 75
@@ -56,3 +65,6 @@ oraclejdk8:
     metaspace: 64m..
   repository_root: "https://s3.amazonaws.com/covisintrnd.com-software"
   version: 1.8.0_+
+  memory_calculator:
+    version: 1.+
+    repository_root: "{default.repository.root}/memory-calculator/{platform}/{architecture}"
