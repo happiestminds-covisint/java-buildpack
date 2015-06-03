@@ -37,7 +37,7 @@ module JavaBuildpack
       def sub_components(context)
      	  YamlParser.new(context)
         [
-          OpenJDKLikeJre.new(sub_configuration_context(context, $configjdk)
+          OpenJDKLikeJre.new(sub_configuration_context(context, jdkkey)
                                .merge(component_name: self.class.to_s.space_case)),
           OpenJDKLikeMemoryCalculator.new(sub_configuration_context(context, 'memory_calculator'))
         ]
@@ -47,8 +47,15 @@ module JavaBuildpack
       def supports?
         true
       end
+      #this functionality to make sure always jdk values should not be empty.
+      def jdkkey
+		if $configjdk.nil?
+			$configjdk='openjdk8'
+		else
+			$configjdk
+		end
+      end
 
-	  
     end
 
   end
