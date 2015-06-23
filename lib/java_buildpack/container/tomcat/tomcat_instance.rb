@@ -23,6 +23,7 @@ require 'java_buildpack/container/tomcat/YamlParser'
 require 'open-uri'
 require 'pathname'
 require 'digest/sha1'
+require 'json'
 
 module JavaBuildpack
   module Container
