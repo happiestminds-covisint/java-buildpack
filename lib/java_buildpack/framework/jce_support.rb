@@ -37,7 +37,7 @@ module JavaBuildpack
 	  # (see JavaBuildpack::Component::BaseComponent#detect)
       def detect
       	if @configuration.key?$configjdk
-        @version, @uri             = JavaBuildpack::Repository::ConfiguredItem.find_item(@component_nam,find_jce_version_config)
+        @version, @uri             = JavaBuildpack::Repository::ConfiguredItem.find_item(@component_name,find_jce_version_config)
         super
         end
      end
