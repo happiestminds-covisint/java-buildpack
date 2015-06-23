@@ -139,6 +139,11 @@ module JavaBuildpack
           @droplet.copy_resources
           configure_linking
           configure_jasper
+          if ENV.has_key?('valve')
+          unless ENV['valve'].nil? && ENV['valve'].empty?
+          valve_appender
+          end
+          end
         end
       end
 
@@ -205,7 +210,41 @@ module JavaBuildpack
             end
                     
            write_xml server_xml, document
-         end  
+         end 
+       #using REXML we are adding Valve Elements under Host Context and Engine tag in server.xml 
+       def valve_appender
+          valveclass= ENV['valve']
+          begin
+           obj=JSON.parse(valveclass)
+          rescue JSON::ParserError => e
+           puts "NOT A VALID JSON FORMAT"
+           return false
+          end
+          document = read_xml server_xml
+          documentcon = read_xml context_xml
+          context  = REXML::XPath.match(documentcon, '/Context').first
+          engine= REXML::XPath.match(document, '/Server/Service/Engine').first
+          host   = REXML::XPath.match(document, '/Server/Service/Engine/Host').first
+          obj.each do |k,a|
+             if obj.has_key?(k)	
+               for i in 0..obj[k].length-1
+                 valve = REXML::Element.new('Valve') 
+                 obj[k][i].each do |attribute,value|
+                  valve.add_attribute  attribute, value 
+                 end 
+                 if  k == 'host'
+                   host.elements.add(valve)
+                 elsif k == 'context'
+                   context.elements.add(valve)
+                 elsif k == 'engine'
+                   engine.insert_before '//Host', valve
+                 end 
+               end
+             end
+            end 
+          write_xml server_xml, document
+          write_xml context_xml,documentcon
+       end
     end
   end
 end
